@@ -1,0 +1,1 @@
+6 DOF free-fly camera with minimal dependencies.
