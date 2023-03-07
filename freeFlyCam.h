@@ -18,8 +18,8 @@ struct FreeFlyCam {
     template <std::size_t dimensionality_T>
     using vec_t = std::array< float, dimensionality_T >;
     
-    using rowVec3_t = vec_t<3u>; //std::array< float, 3 >;
-    using rowVec4_t = vec_t<4u>; //std::array< float, 4 >;
+    using rowVec3_t = vec_t<3u>;
+    using rowVec4_t = vec_t<4u>;
     using rowMajorMat3x4_t = std::array< rowVec4_t, 3u >;
 
     FreeFlyCam();
@@ -34,7 +34,6 @@ struct FreeFlyCam {
     const rowMajorMat3x4_t& getViewMatrix() const { return mViewMat; }
     void setControlConfig( const ControlConfig controlConfig ) { mControlConfig = controlConfig; }
 
-    // void setDampingFactor( const float dampingFactor ) { mDampingFactor = dampingFactor; }
     void setMouseSensitivity( const float mouseSensitivity ) { mMouseSensitivity = mouseSensitivity; }
 
     void resetTrafos();
@@ -46,18 +45,12 @@ private:
     
     ControlConfig mControlConfig;
     
-    // rowVec3_t mStartMouseNDC;
-    // rowVec3_t mCurrMouseNDC;
-
     float mCurrMouseX;
     float mCurrMouseY;
     float mPrevMouseX;
     float mPrevMouseY;
-    // float mTargetMouse_dx;
-    // float mTargetMouse_dy;
     float mMouseSensitivity;
-    // float mDampingFactor;
-
+    
     bool  mLMBdown;
     bool  mRMBdown;
 };
