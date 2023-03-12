@@ -54,15 +54,16 @@ namespace {
     
 }
 
-FreeFlyCam::FreeFlyCam() {
+FreeFlyCam::FreeFlyCam() 
+    : mLMBdown( false )
+    , mRMBdown( false )
+    , mIsActive( true ) {
 
     resetTrafos();
 
     setControlConfig( ControlConfig{ .invertY=1u } );
 
     setMouseSensitivity( mouseSensitivityInit );
-    mLMBdown = false;
-    mRMBdown = false;
 
     mCurrMouseX = 0.0f;
     mCurrMouseY = 0.0f;
@@ -77,6 +78,8 @@ FreeFlyCam::Status_t FreeFlyCam::update(
     const bool LMBpressed, const bool RMBpressed, 
     const rowVec3_t& translationDelta
     ) {
+
+    if (!mIsActive) { return Status_t::OK; }
 
     mCurrMouseX = mouseX;
     mCurrMouseY = mouseY;
@@ -152,6 +155,22 @@ FreeFlyCam::Status_t FreeFlyCam::update(
     mPrevMouseY = mCurrMouseY;
 
     return Status_t::OK;
+}
+
+void FreeFlyCam::setPosition( const rowVec3_t& pos ) {
+    mPosWS = pos;
+
+    rowVec3_t *const xAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[0] );
+    rowVec3_t *const yAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[1] );
+    rowVec3_t *const zAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[2] );
+
+    rowVec3_t currXAxis = *xAxis;
+    rowVec3_t currYAxis = *yAxis;
+    rowVec3_t currZAxis = *zAxis;
+
+    mViewMat[0][3] = -dot( currXAxis, mPosWS ); 
+    mViewMat[1][3] = -dot( currYAxis, mPosWS );
+    mViewMat[2][3] = -dot( currZAxis, mPosWS );
 }
 
 void FreeFlyCam::resetTrafos() {

@@ -32,9 +32,12 @@ struct FreeFlyCam {
                      );
     
     const rowMajorMat3x4_t& getViewMatrix() const { return mViewMat; }
+    void setPosition( const rowVec3_t& pos );
+
     void setControlConfig( const ControlConfig controlConfig ) { mControlConfig = controlConfig; }
 
     void setMouseSensitivity( const float mouseSensitivity ) { mMouseSensitivity = mouseSensitivity; }
+    void setActive( const bool isActive ) { mIsActive = isActive; }
 
     void resetTrafos();
 
@@ -53,6 +56,8 @@ private:
     
     bool  mLMBdown;
     bool  mRMBdown;
+
+    bool  mIsActive;
 };
 
 #endif // _FREEFLYCAM_H_9ec4f00a_2117_4578_937e_9f4fb94dc759
