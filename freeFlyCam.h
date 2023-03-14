@@ -32,6 +32,8 @@ struct FreeFlyCam {
                      );
     
     const rowMajorMat3x4_t& getViewMatrix() const { return mViewMat; }
+    void setViewMatrix( const rowMajorMat3x4_t& viewMatrix );
+
     void setPosition( const rowVec3_t& pos );
 
     void setControlConfig( const ControlConfig controlConfig ) { mControlConfig = controlConfig; }
