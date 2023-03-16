@@ -163,33 +163,12 @@ void FreeFlyCam::setViewMatrix( const rowMajorMat3x4_t& viewMatrix ) {
     resetTrafos();
 
     mViewMat = viewMatrix;
-    //mViewMat[0] = mViewMat[0] * -1.0f;
-    //mViewMat[1] = mViewMat[1] * -1.0f;
-    //mViewMat[2] = mViewMat[2] * -1.0f;
-
-    //mViewMat[0][3] = -mViewMat[0][3];
-    //mViewMat[1][3] = -mViewMat[1][3];
-    //mViewMat[2][3] = -mViewMat[2][3];
-    //rowVec4_t col0{ viewMatrix[0][0],viewMatrix[1][0],viewMatrix[2][0], 0.0f };
-    //rowVec4_t col1{ viewMatrix[0][1],viewMatrix[1][1],viewMatrix[2][1], 0.0f };
-    //rowVec4_t col2{ viewMatrix[0][2],viewMatrix[1][2],viewMatrix[2][2], 0.0f };
-
+    
     linAlg::mat4_t viewMat4;
     linAlg::castMatrix( viewMat4, viewMatrix );
     linAlg::mat4_t invViewMat4;
-    //linAlg::transpose( invViewMat4, viewMat4 );
     linAlg::inverse( invViewMat4, viewMat4 );
 
-    //linAlg::vec4_t camPosES{ 0.0f, 0.0f, 0.0f, 1.0f };
-    //linAlg::vec4_t camPosWS = camPosES;
-    //linAlg::applyTransformationToPoint( invViewMat4, &camPosWS, 1 );
-    //linAlg::applyTransformationToPoint( viewMat4, &camPosWS, 1 );
-
-    //mPosWS = { camPosWS[0], camPosWS[1], camPosWS[2] };
-    //mPosWS = { -camPosWS[0], -camPosWS[1], -camPosWS[2] };
-    //mPosWS = { -mViewMat[0][3], -mViewMat[1][3], -mViewMat[2][3] };
-    
-    //setPosition( {invViewMat4[0][3], invViewMat4[1][3], invViewMat4[2][3] } );
     mPosWS = {invViewMat4[0][3], invViewMat4[1][3], invViewMat4[2][3] };
 }
 
