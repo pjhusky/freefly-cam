@@ -67,26 +67,25 @@ FreeFlyCam::FreeFlyCam()
 
     setMouseSensitivity( mouseSensitivityInit );
 
-    mCurrMouseX = 0.0f;
-    mCurrMouseY = 0.0f;
-    mPrevMouseX = mCurrMouseX;
-    mPrevMouseY = mCurrMouseY;
+    mRelativeCurrMouseX = 0.0f;
+    mRelativeCurrMouseY = 0.0f;
+    mPrevRelativeMouseX = mRelativeCurrMouseX;
+    mPrevRelativeMouseY = mRelativeCurrMouseY;
 }
 
 FreeFlyCam::Status_t FreeFlyCam::update( 
     const float timeDelta,
-    const float mouseX, const float mouseY, 
-    const int32_t screenW, const int32_t screenH, 
+    const float relativeMouseX, const float relativeMouseY, 
     const bool LMBpressed, const bool RMBpressed, 
     const rowVec3_t& translationDelta
     ) {
 
     if (!mIsActive) { return Status_t::OK; }
 
-    mCurrMouseX = mouseX;
-    mCurrMouseY = mouseY;
-    const float mouse_dx = (mCurrMouseX - mPrevMouseX) * mMouseSensitivity;
-    const float mouse_dy = (mCurrMouseY - mPrevMouseY) * mMouseSensitivity;
+    mRelativeCurrMouseX = relativeMouseX;
+    mRelativeCurrMouseY = relativeMouseY;
+    const float relative_mouse_dx = (mRelativeCurrMouseX - mPrevRelativeMouseX) * mMouseSensitivity;
+    const float relative_mouse_dy = (mRelativeCurrMouseY - mPrevRelativeMouseY) * mMouseSensitivity;
 
     if (!mLMBdown && LMBpressed) {
         printf( "LMB pressed\n" );
@@ -117,7 +116,7 @@ FreeFlyCam::Status_t FreeFlyCam::update(
     if ( mLMBdown ) {
 
         {
-            const float angleRad = static_cast<float>(std::numbers::pi) * mouse_dx / screenW;
+            const float angleRad = static_cast<float>(std::numbers::pi) * relative_mouse_dx;
             const float cosAngle = cosf( angleRad );
             const float sinAngle = sinf( angleRad );
             *xAxis = (currXAxis *  cosAngle) + (currZAxis * sinAngle);
@@ -127,7 +126,7 @@ FreeFlyCam::Status_t FreeFlyCam::update(
         }
 
         {
-            const float angleRad = static_cast<float>(std::numbers::pi) * mouse_dy / screenH;
+            const float angleRad = static_cast<float>(std::numbers::pi) * relative_mouse_dy;
             const float cosAngle = cosf( angleRad );
             const float sinAngle = sinf( angleRad );
             *yAxis = (currYAxis *  cosAngle) + (currZAxis * sinAngle);
@@ -138,7 +137,7 @@ FreeFlyCam::Status_t FreeFlyCam::update(
 
     } else if ( mRMBdown ) {
 
-        const float angleRad = static_cast<float>( std::numbers::pi ) * -mouse_dx / screenW;
+        const float angleRad = static_cast<float>( std::numbers::pi ) * -relative_mouse_dx;
         const float cosAngle = cosf( angleRad );
         const float sinAngle = sinf( angleRad );
         *xAxis = ( currXAxis *  cosAngle ) + ( currYAxis * sinAngle );
@@ -153,8 +152,8 @@ FreeFlyCam::Status_t FreeFlyCam::update(
     mViewMat[1][3] = -dot( currYAxis, mPosWS );
     mViewMat[2][3] = -dot( currZAxis, mPosWS );
     
-    mPrevMouseX = mCurrMouseX;
-    mPrevMouseY = mCurrMouseY;
+    mPrevRelativeMouseX = mRelativeCurrMouseX;
+    mPrevRelativeMouseY = mRelativeCurrMouseY;
 
     return Status_t::OK;
 }
@@ -194,9 +193,9 @@ void FreeFlyCam::resetTrafos() {
 
     mPosWS = { 0.0f, 0.0f, 0.0f };
 
-    mCurrMouseX = 0;
-    mCurrMouseY = 0;
-    mPrevMouseX = 0;
-    mPrevMouseY = 0;
+    mRelativeCurrMouseX = 0;
+    mRelativeCurrMouseY = 0;
+    mPrevRelativeMouseX = 0;
+    mPrevRelativeMouseY = 0;
     
 }
