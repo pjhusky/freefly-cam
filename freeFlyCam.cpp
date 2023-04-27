@@ -88,20 +88,20 @@ FreeFlyCam::Status_t FreeFlyCam::update(
     const float relative_mouse_dy = (mRelativeCurrMouseY - mPrevRelativeMouseY) * mMouseSensitivity;
 
     if (!mLMBdown && LMBpressed) {
-        printf( "LMB pressed\n" );
+        //printf( "LMB pressed\n" );
         mLMBdown = true;
     }
     if (mLMBdown && !LMBpressed) {
-        printf( "LMB released\n" );
+        //printf( "LMB released\n" );
         mLMBdown = false;
     }
 
     if (!mRMBdown && RMBpressed) {
-        printf( "RMB pressed\n" );
+        //printf( "RMB pressed\n" );
         mRMBdown = true;
     }
     if (mRMBdown && !RMBpressed) {
-        printf( "RMB released\n" );
+        //printf( "RMB released\n" );
         mRMBdown = false;
     }
 
