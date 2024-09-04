@@ -20,13 +20,6 @@ namespace {
         mat[2] = FreeFlyCam::rowVec4_t{ 0.0f, 0.0f, 1.0f, 0.0f };
     }
     
-     //template<uint32_t num_T>
-     //static FreeFlyCam::vec_t<num_T>& operator*( FreeFlyCam::vec_t<num_T>& vec, const float scalar ) {
-     //    for ( auto& entry : vec ) {
-     //        entry *= scalar;
-     //    }
-     //    return vec;
-     //}
     template<std::size_t num_T>
     static inline FreeFlyCam::vec_t<num_T> operator*( const FreeFlyCam::vec_t<num_T>& vec, const float scalar ) {
         FreeFlyCam::vec_t<num_T> result = vec;
@@ -196,6 +189,5 @@ void FreeFlyCam::resetTrafos() {
     mRelativeCurrMouseX = 0;
     mRelativeCurrMouseY = 0;
     mPrevRelativeMouseX = 0;
-    mPrevRelativeMouseY = 0;
-    
+    mPrevRelativeMouseY = 0;    
 }
