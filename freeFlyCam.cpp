@@ -164,16 +164,51 @@ void FreeFlyCam::setViewMatrix( const rowMajorMat3x4_t& viewMatrix ) {
     mPosWS = {invViewMat4[0][3], invViewMat4[1][3], invViewMat4[2][3] };
 }
 
-void FreeFlyCam::setPosition( const rowVec3_t& pos ) {
-    mPosWS = pos;
+void FreeFlyCam::setPosition( const rowVec3_t& posWS ) {
+    mPosWS = posWS;
+
+    const rowVec3_t *const xAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[0] );
+    const rowVec3_t *const yAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[1] );
+    const rowVec3_t *const zAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[2] );
+
+    const rowVec3_t currXAxis = *xAxis;
+    const rowVec3_t currYAxis = *yAxis;
+    const rowVec3_t currZAxis = *zAxis;
+
+    mViewMat[0][3] = -dot( currXAxis, mPosWS ); 
+    mViewMat[1][3] = -dot( currYAxis, mPosWS );
+    mViewMat[2][3] = -dot( currZAxis, mPosWS );
+}
+
+void FreeFlyCam::lookAt( const rowVec3_t& lookAtPosWS ) {
+
+    rowVec3_t lookDir = mPosWS - lookAtPosWS;
+    linAlg::normalize( lookDir );
+    //lookDir = lookDir * -1.0f;
+    rowVec3_t *const zAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[2] );
+    *zAxis = lookDir;
 
     rowVec3_t *const xAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[0] );
     rowVec3_t *const yAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[1] );
-    rowVec3_t *const zAxis = reinterpret_cast< rowVec3_t *const >( &mViewMat[2] );
 
-    rowVec3_t currXAxis = *xAxis;
-    rowVec3_t currYAxis = *yAxis;
-    rowVec3_t currZAxis = *zAxis;
+    // axis with smaller dot prod is "further" away from zAxis, and thus better "spans" a coord frame
+    const auto xzDot = dot( *zAxis, *xAxis );
+    const auto yzDot = dot( *zAxis, *yAxis );
+    if (xzDot <= yzDot) {
+        linAlg::cross( *yAxis, *zAxis, *xAxis );
+        linAlg::normalize( *yAxis );
+        linAlg::cross( *xAxis, *yAxis, *zAxis );
+        linAlg::normalize( *xAxis );
+    } else {
+        linAlg::cross( *xAxis, *yAxis, *zAxis );
+        linAlg::normalize( *xAxis );
+        linAlg::cross( *yAxis, *zAxis, *xAxis );
+        linAlg::normalize( *yAxis );
+    }
+
+    const rowVec3_t currXAxis = *xAxis;
+    const rowVec3_t currYAxis = *yAxis;
+    const rowVec3_t currZAxis = *zAxis;
 
     mViewMat[0][3] = -dot( currXAxis, mPosWS ); 
     mViewMat[1][3] = -dot( currYAxis, mPosWS );
